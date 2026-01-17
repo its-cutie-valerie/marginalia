@@ -32,6 +32,13 @@ import {
   Heart,
   Github,
   Coffee,
+  Settings,
+  Share2,
+  Play,
+  AlignLeft,
+  Bookmark,
+  BookmarkPlus,
+  Clock,
   Sun,
   Contrast,
   Zap,
@@ -41,24 +48,13 @@ import {
   SlidersHorizontal,
   Wand2,
   Plus,
-  History,
-  Bookmark,
-  BookmarkPlus,
-  Clock,
-  Palette,
-  Moon,
-  Waves,
-  TreePine,
-  Flower2,
-  Sunset,
-  Ghost,
-  Snowflake,
-  Terminal,
-  Box,
-  AlignLeft,
+  History as HistoryIcon,
 } from 'lucide-react';
 import './App.css';
 import { Modal } from './components/Modal';
+import { ExportModal } from './components/ExportModal';
+import { CodeRunner } from './components/CodeRunner';
+import { SettingsModal, type AppPreferences, type ThemeName } from './components/SettingsModal';
 
 import { format } from 'prettier/standalone';
 import * as parserBabel from 'prettier/plugins/babel';
@@ -69,6 +65,7 @@ import * as parserCss from 'prettier/plugins/postcss';
 
 // Language detection patterns with weights (higher = more specific)
 const LANGUAGE_PATTERNS: Record<string, { patterns: RegExp[]; weight: number }> = {
+  // ... (rest of patterns) ...
   // TSX/JSX must be checked BEFORE HTML
   typescriptreact: {
     patterns: [
@@ -465,30 +462,6 @@ function getLanguageName(lang: string): string {
 // Icon size helper
 const iconSize = 16;
 
-// Theme types and options
-// Theme types and options
-type ThemeName =
-  | 'dark' | 'light' | 'ocean' | 'forest' | 'rose' | 'sunset'
-  | 'dracula' | 'nord' | 'monokai' | 'solarized-dark' | 'gruvbox' | 'synthwave';
-
-const THEMES: { name: ThemeName; label: string; icon: React.ReactNode; color: string }[] = [
-  // Standard Themes
-  { name: 'dark', label: 'Dark', icon: <Moon size={16} />, color: '#8b5cf6' },
-  { name: 'light', label: 'Light', icon: <Sun size={16} />, color: '#7c3aed' },
-  { name: 'ocean', label: 'Ocean', icon: <Waves size={16} />, color: '#0ea5e9' },
-  { name: 'forest', label: 'Forest', icon: <TreePine size={16} />, color: '#10b981' },
-  { name: 'rose', label: 'Rose', icon: <Flower2 size={16} />, color: '#f43f5e' },
-  { name: 'sunset', label: 'Sunset', icon: <Sunset size={16} />, color: '#f97316' },
-
-  // Programmer Themes
-  { name: 'dracula', label: 'Dracula', icon: <Ghost size={16} />, color: '#bd93f9' },
-  { name: 'nord', label: 'Nord', icon: <Snowflake size={16} />, color: '#88c0d0' },
-  { name: 'monokai', label: 'Monokai', icon: <Terminal size={16} />, color: '#a6e22e' },
-  { name: 'solarized-dark', label: 'Solarized', icon: <Sun size={16} />, color: '#b58900' },
-  { name: 'gruvbox', label: 'Gruvbox', icon: <Box size={16} />, color: '#fe8019' },
-  { name: 'synthwave', label: 'Synthwave', icon: <Zap size={16} />, color: '#ff00ba' },
-];
-
 // Get editor theme based on app theme
 function getEditorTheme(theme: ThemeName): string {
   return theme === 'light' ? 'light' : 'vs-dark';
@@ -514,12 +487,28 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [imageSettings, setImageSettings] = useState<ImageSettings>(DEFAULT_SETTINGS);
 
+  // App Preferences
+  const [preferences, setPreferences] = useState<AppPreferences>(() => {
+    const saved = localStorage.getItem('app_preferences');
+    return saved ? JSON.parse(saved) : {
+      saveHistory: true,
+    };
+  });
+
+  const updatePreference = useCallback((key: keyof AppPreferences, value: boolean) => {
+    setPreferences(prev => {
+      const next = { ...prev, [key]: value };
+      localStorage.setItem('code-ocr-preferences', JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
   // Theme state
   const [theme, setTheme] = useState<ThemeName>(() => {
     const saved = localStorage.getItem('code-ocr-theme');
     return (saved as ThemeName) || 'dark';
   });
-  const [showThemePicker, setShowThemePicker] = useState(false);
+  // showThemePicker replaced by SettingsModal
 
   // History & Snippets
   const [showHistory, setShowHistory] = useState(false);
@@ -528,6 +517,11 @@ function App() {
   const [snippets, setSnippets] = useState<SavedSnippet[]>([]);
   const [snippetName, setSnippetName] = useState('');
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+
+  // New Features State
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [showCodeRunner, setShowCodeRunner] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const toastIdRef = useRef(0);
@@ -608,6 +602,8 @@ function App() {
       return;
     }
 
+
+
     setIsProcessing(true);
     setProgress(0);
 
@@ -639,11 +635,14 @@ function App() {
       const detectedLang = detectLanguage(cleanedCode);
       setLanguage(detectedLang);
 
-      // Save to history
-      const historyItem = addToHistory(cleanedCode, detectedLang);
-      setHistory(prev => [historyItem, ...prev].slice(0, 20));
+      // Save to history (Preference check)
+      if (preferences.saveHistory) {
+        const historyItem = addToHistory(cleanedCode, detectedLang);
+        setHistory(prev => [historyItem, ...prev].slice(0, 20));
+      }
 
       showToast(`Code extracted! Detected: ${getLanguageName(detectedLang)}`, 'success');
+
     } catch (error) {
       console.error('OCR Error:', error);
       showToast('Failed to extract text from image', 'error');
@@ -651,7 +650,7 @@ function App() {
       setIsProcessing(false);
       setProgress(0);
     }
-  }, [worker, showToast]);
+  }, [worker, showToast, preferences]);
 
   const handleFile = useCallback((file: File) => {
     if (!file.type.startsWith('image/')) {
@@ -680,7 +679,7 @@ function App() {
 
   // Global Paste Listener
   useEffect(() => {
-    const handleGlobalPaste = (e: ClipboardEvent) => {
+    const handleGlobalPaste = async (e: ClipboardEvent) => {
       // Ignore if pasting into an input/textarea (like the code editor or snippet name input)
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return;
@@ -689,21 +688,49 @@ function App() {
       const items = e.clipboardData?.items;
       if (!items) return;
 
+
+
+      // Prioritize images first
       for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf('image') !== -1) {
           const file = items[i].getAsFile();
           if (file) {
             e.preventDefault();
             handleFile(file);
-            break;
+            return; // Stop checking items
           }
         }
+      }
+
+      // If no image found, check for text
+      const text = e.clipboardData?.getData('text/plain');
+      if (text && text.trim()) {
+        e.preventDefault();
+
+        // Update states for text mode
+        setImage(null);
+        setProcessedImage(null);
+        setCode(text);
+
+        // Detect language
+        const detected = detectLanguage(text);
+        setLanguage(detected);
+
+        // Save to History for paste? Usually yes if it's new. 
+        // Logic: if preferences.saveHistory is true.
+        if (preferences.saveHistory) {
+          const historyItem = addToHistory(text, detected);
+          setHistory(prev => [historyItem, ...prev].slice(0, 20));
+        }
+
+        showToast(`Code pasted! Detected: ${getLanguageName(detected)}`, 'success');
+
       }
     };
 
     window.addEventListener('paste', handleGlobalPaste);
     return () => window.removeEventListener('paste', handleGlobalPaste);
-  }, [handleFile]);
+  }, [handleFile, showToast, preferences]);
 
   // Handle Code Formatting
   const handleFormat = async () => {
@@ -875,24 +902,25 @@ function App() {
             <button
               className={`btn btn--secondary ${showHistory ? 'btn--active' : ''}`}
               onClick={() => { setShowHistory(!showHistory); setShowSnippets(false); }}
+              title="History"
             >
-              <History size={iconSize} />
-              History {history.length > 0 && <span className="badge">{history.length}</span>}
+              <HistoryIcon size={iconSize} />
+              {history.length > 0 && <span className="badge">{history.length}</span>}
             </button>
             <button
               className={`btn btn--secondary ${showSnippets ? 'btn--active' : ''}`}
               onClick={() => { setShowSnippets(!showSnippets); setShowHistory(false); }}
+              title="Snippets"
             >
               <Bookmark size={iconSize} />
-              Snippets {snippets.length > 0 && <span className="badge">{snippets.length}</span>}
+              {snippets.length > 0 && <span className="badge">{snippets.length}</span>}
             </button>
             <button
-              className={`btn btn--secondary ${showThemePicker ? 'btn--active' : ''}`}
-              onClick={() => setShowThemePicker(!showThemePicker)}
-              title="Change theme"
+              className={`btn btn--secondary ${showSettingsModal ? 'btn--active' : ''}`}
+              onClick={() => setShowSettingsModal(true)}
+              title="Settings"
             >
-              <Palette size={iconSize} />
-              Theme
+              <Settings size={iconSize} />
             </button>
           </div>
           <div className="header__hint">
@@ -927,7 +955,7 @@ function App() {
                   <Upload size={iconSize} />
                   <div className="dropzone__text">
                     <p className="dropzone__title">
-                      {isDragging ? 'Drop image here' : 'Drop an image or click to upload'}
+                      {isDragging ? 'Drop image here' : 'Drop an image, paste code, or click to upload'}
                     </p>
                     <p className="dropzone__subtitle">
                       Supports PNG, JPG, GIF, WebP
@@ -1149,6 +1177,7 @@ function App() {
                   <span className="lang-badge">{getLanguageName(language)}</span>
                 </h2>
                 <div className="editor-toolbar">
+                  {/* Language select stays as is */}
                   <select
                     className="language-select"
                     value={language}
@@ -1160,21 +1189,21 @@ function App() {
                       </option>
                     ))}
                   </select>
+
+                  {/* ... format button stays icon-only ... */}
+
                   <div className="tooltip-wrapper">
                     <button
                       className={`btn btn--secondary ${!['javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'json', 'css', 'scss', 'less', 'html', 'xml', 'markdown'].includes(language) ? 'btn--disabled' : ''}`}
                       onClick={handleFormat}
                       disabled={!['javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'json', 'css', 'scss', 'less', 'html', 'xml', 'markdown'].includes(language)}
                       style={!['javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'json', 'css', 'scss', 'less', 'html', 'xml', 'markdown'].includes(language) ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                      title={(['javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'json', 'css', 'scss', 'less', 'html', 'xml', 'markdown'].includes(language) ? "Format Code" : `Formatting not available for ${getLanguageName(language)}`)}
                     >
                       <AlignLeft size={iconSize} />
                     </button>
-                    <span className="tooltip-text">
-                      {['javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'json', 'css', 'scss', 'less', 'html', 'xml', 'markdown'].includes(language)
-                        ? "Format Code"
-                        : `Formatting not available for ${getLanguageName(language)}`}
-                    </span>
                   </div>
+
                   <button
                     className="btn btn--secondary"
                     onClick={() => setShowSaveDialog(true)}
@@ -1185,9 +1214,29 @@ function App() {
                   <button
                     className="btn btn--primary"
                     onClick={copyToClipboard}
+                    title="Copy to clipboard"
                   >
                     <Copy size={iconSize} />
-                    Copy
+                  </button>
+                  <div className="toolbar-divider" style={{ width: 1, height: 24, background: 'var(--border-color)', margin: '0 4px' }} />
+                  <button
+                    className="btn btn--secondary"
+                    onClick={() => setShowCodeRunner(true)}
+                    title="Run Code (JS/TS only)"
+                    disabled={!['javascript', 'typescript', 'javascriptreact', 'typescriptreact'].includes(language)}
+                    style={{
+                      opacity: !['javascript', 'typescript', 'javascriptreact', 'typescriptreact'].includes(language) ? 0.5 : 1,
+                      cursor: !['javascript', 'typescript', 'javascriptreact', 'typescriptreact'].includes(language) ? 'not-allowed' : 'pointer'
+                    }}
+                  >
+                    <Play size={iconSize} />
+                  </button>
+                  <button
+                    className="btn btn--secondary"
+                    onClick={() => setShowExportModal(true)}
+                    title="Export Image"
+                  >
+                    <Share2 size={iconSize} />
                   </button>
                 </div>
               </div>
@@ -1274,22 +1323,13 @@ function App() {
                 <Coffee size={20} />
               </a>
               <a
-                href="https://github.com/its-cutie-valerie/code-ocr"
+                href="https://github.com/its-cutie-valerie"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn--ghost"
                 title="Star on GitHub"
               >
                 <Github size={20} />
-              </a>
-              <a
-                href="https://paypal.me/valerie"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn--ghost"
-                title="Donate"
-              >
-                <Heart size={20} fill="currentColor" />
               </a>
             </div>
           </div>
@@ -1312,7 +1352,7 @@ function App() {
         onClose={() => setShowHistory(false)}
         title={
           <>
-            <History size={iconSize} />
+            <HistoryIcon size={iconSize} />
             Recent Extractions
             {history.length > 0 && <span className="badge">{history.length}</span>}
           </>
@@ -1464,33 +1504,31 @@ function App() {
         </div>
       </Modal>
 
-      {/* Theme Picker Modal */}
-      <Modal
-        isOpen={showThemePicker}
-        onClose={() => setShowThemePicker(false)}
-        title={
-          <>
-            <Palette size={iconSize} />
-            Select Theme
-          </>
-        }
-        size="small"
-      >
-        <div className="themes-grid">
-          {THEMES.map((t) => (
-            <button
-              key={t.name}
-              className={`theme-card ${theme === t.name ? 'theme-card--active' : ''}`}
-              onClick={() => setTheme(t.name)}
-              style={{ '--theme-color': t.color } as React.CSSProperties}
-            >
-              <div className="theme-card__icon">{t.icon}</div>
-              <span className="theme-card__label">{t.label}</span>
-              {theme === t.name && <div className="theme-card__check"><Check size={12} /></div>}
-            </button>
-          ))}
-        </div>
-      </Modal>
+
+
+      {/* Export Modal */}
+      <ExportModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        code={code}
+        language={language}
+      />
+
+      {/* Code Runner Modal */}
+      <CodeRunner
+        isOpen={showCodeRunner}
+        onClose={() => setShowCodeRunner(false)}
+        code={code}
+        language={language}
+      />
+      <SettingsModal
+        isOpen={showSettingsModal}
+        onClose={() => setShowSettingsModal(false)}
+        theme={theme}
+        setTheme={setTheme}
+        preferences={preferences}
+        onUpdatePreference={updatePreference}
+      />
     </div>
   );
 }

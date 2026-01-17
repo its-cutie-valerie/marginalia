@@ -1,47 +1,50 @@
 # PicCodey
 
-PicCodey is a specialized Optical Character Recognition (OCR) web application designed for extracting source code from images. It combines a powerful OCR engine with a fully featured code editor, allowing developers to digitize, edit, and format code snippets from screenshots or photos.
+PicCodey is a modern, developer-focused Optical Character Recognition (OCR) web application. it transforms screenshots, photos, and clipboard content into editable, runnable code. Built with a "manual-first" philosophy, it gives you precise control over extraction, editing, execution, and exporting.
 
-## Features
+## Key Features
 
--   **Intelligent Code OCR**: Utilizes Tesseract.js to extract text from images with optimizations for programming syntax.
--   **Integrated Code Editor**: Built on Monaco Editor (the core of VS Code) for a familiar editing experience with syntax highlighting.
--   **Code Formatting**: Integrated Prettier support to automatically format extracted code for JavaScript, TypeScript, HTML, CSS, JSON, and Markdown.
--   **Global Paste Support**: Paste images directly from the clipboard anywhere in the application window.
--   **Local Storage History**: Automatically saves extracted snippets and history to the browser's local storage for privacy and persistence.
--   **Syntax Highlighting**: Supports auto-detection and manual selection for a wide variety of programming languages.
--   **Customizable Aesthetics**: Features multiple high-contrast themes optimized for accessibility and coding environments.
+### Smart Extraction
+-   **Image OCR**: Drag & drop or paste images to extract text using Tesseract.js.
+-   **Global Paste**: Paste text or images anywhere in the app (Ctrl+V) to instantly load them.
+-   **Auto-Detection**: Automatically detects programming languages from extracted content.
 
-## Technologies Used
+### Powerful Editor
+-   **Monaco Editor**: Professional-grade editing experience (VS Code compatible).
+-   **Manual Formatting**: One-click formatting for JS, TS, HTML, CSS, JSON, and more via Prettier.
+-   **Safe Execution**: Run JavaScript and TypeScript code safely in a sandboxed environment directly within the browser.
 
--   **React**: UI components and state management.
--   **Tesseract.js**: Browser-based OCR engine.
--   **Monaco Editor**: Professional-grade code editing interface.
--   **Prettier**: Code formatting logic.
--   **Vite**: Fast build tool and development server.
+### Beautiful & Functional
+-   **Smart Export**: Create stunning, Carbon-style images of your code for sharing on social media.
+-   **Theme Engine**: Choose from a wide variety of themes (Dracula, Nord, Sunset, etc.) via the Settings menu.
+-   **History Tracking**: Automatically saves your recent extractions for easy retrieval.
 
-## Installation and Setup
+## Technologies
 
-To run this project locally, follow these steps:
+-   **Frontend**: React, TypeScript, Vite
+-   **Core**: Tesseract.js (OCR), Monaco Editor (Editing), Prettier (Formatting)
+-   **Styling**: Modern CSS variables, Lucide Icons
+
+## Getting Started
 
 1.  Clone the repository.
 2.  Install dependencies:
     ```bash
     npm install
     ```
-3.  Start the development server:
+3.  Start the dev server:
     ```bash
     npm run dev
     ```
-4.  Open the application in your browser at the provided localhost URL (typically http://localhost:5173).
+4.  Open http://localhost:5173
 
-## Usage Guide
+## How to Use
 
-1.  **Extract Code**: Drag and drop an image file into the upload zone, or paste an image from your clipboard.
-2.  **Edit**: The extracted text will appear in the editor. Use the toolbar to select the programming language if it was not correctly detected.
-3.  **Format**: Click the "Format" button in the toolbar to clean up the code indentation and style. Note: Formatting is available for supported languages only.
-4.  **Save/History**: Extracted snippets are automatically saved to your history. You can also manually save snippets for long-term storage.
+1.  **Input**: Paste an image/text or drop a file.
+2.  **Edit**: Refine the code in the editor.
+3.  **Run**: Click the "Play" icon to execute JS/TS code.
+4.  **Export**: Click the "Share" icon to generate a beautiful image of your snippet.
+5.  **Settings**: Click the "Gear" icon to toggle history or change themes.
 
 ## Browser Support
-
-This application relies on modern web technologies including WebAssembly for the OCR engine. Ideally, use the latest versions of Chrome, Firefox, Safari, or Edge.
+Requires a modern browser with WebAssembly support (Chrome, Edge, Firefox, Safari).

@@ -35,8 +35,31 @@
 /* Header */
 .header {
   text-align: center;
-  padding: 0.75rem 0;
+  padding: 1.5rem 0;
   animation: slideUp 0.6s ease-out;
+  position: relative;
+  /* For absolute positioning of actions */
+}
+
+/* ... existing title/subtitle styles ... */
+
+/* Header Actions */
+.header__actions {
+  position: absolute;
+  top: 1rem;
+  right: 0;
+  /* Aligned to container edge, might need adjustment based on padding */
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .header__actions {
+    position: static;
+    /* Stack on mobile */
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
 }
 
 .header__title {
