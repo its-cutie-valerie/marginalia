@@ -20,7 +20,6 @@ import {
   ClipboardPaste,
   Heart,
   Github,
-  Coffee,
   Settings,
   History as HistoryIcon,
   Bookmark,
@@ -52,7 +51,7 @@ function App() {
 
   // App Preferences
   const [preferences, setPreferences] = useState<AppPreferences>(() => {
-    const saved = localStorage.getItem('app_preferences');
+    const saved = localStorage.getItem('marginalia-preferences');
     return saved ? JSON.parse(saved) : {
       saveHistory: true,
     };
@@ -61,15 +60,23 @@ function App() {
   const updatePreference = useCallback((key: keyof AppPreferences, value: boolean) => {
     setPreferences(prev => {
       const next = { ...prev, [key]: value };
-      localStorage.setItem('code-ocr-preferences', JSON.stringify(next));
+      localStorage.setItem('marginalia-preferences', JSON.stringify(next));
       return next;
     });
   }, []);
 
   // Theme state
   const [theme, setTheme] = useState<ThemeName>(() => {
-    const saved = localStorage.getItem('code-ocr-theme');
-    return (saved as ThemeName) || 'dark';
+    const saved = localStorage.getItem('marginalia-theme');
+    return (saved as ThemeName) || 'auto';
+  });
+
+  // Resolved theme (what's actually applied)
+  const [resolvedTheme, setResolvedTheme] = useState<string>(() => {
+    if (theme === 'auto') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? '' : 'light';
+    }
+    return theme === 'dark' ? '' : theme;
   });
 
   // History & Snippets
@@ -84,10 +91,32 @@ function App() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Apply theme to document
+  // Apply theme to document and handle auto theme
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme === 'dark' ? '' : theme);
-    localStorage.setItem('code-ocr-theme', theme);
+    const applyTheme = (selectedTheme: ThemeName) => {
+      if (selectedTheme === 'auto') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        return prefersDark ? '' : 'light';
+      }
+      return selectedTheme === 'dark' ? '' : selectedTheme;
+    };
+
+    const resolved = applyTheme(theme);
+    setResolvedTheme(resolved);
+    document.documentElement.setAttribute('data-theme', resolved);
+    localStorage.setItem('marginalia-theme', theme);
+
+    // Listen for system theme changes when in auto mode
+    if (theme === 'auto') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = (e: MediaQueryListEvent) => {
+        const newResolved = e.matches ? '' : 'light';
+        setResolvedTheme(newResolved);
+        document.documentElement.setAttribute('data-theme', newResolved);
+      };
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
   }, [theme]);
 
   // Initialize Tesseract worker
@@ -380,7 +409,7 @@ function App() {
             setCode={setCode}
             language={language}
             setLanguage={setLanguage}
-            theme={theme}
+            theme={resolvedTheme}
             isProcessing={isProcessing}
             onSaveSnippet={() => setShowSnippets(true)} // Open snippets modal to save
             onCopyToClipboard={copyToClipboard}

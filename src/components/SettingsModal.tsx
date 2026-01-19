@@ -1,9 +1,9 @@
 import React from 'react';
 import { Modal } from './Modal';
-import { Sun, Moon, Ghost, Snowflake, Terminal, Box, Zap, Cat, Settings as SettingsIcon, History } from 'lucide-react';
+import { Sun, Moon, Ghost, Snowflake, Terminal, Box, Zap, Cat, Monitor, Settings as SettingsIcon, History } from 'lucide-react';
 
 export type ThemeName =
-    | 'dark' | 'light'
+    | 'auto' | 'dark' | 'light'
     | 'dracula' | 'nord' | 'monokai' | 'solarized-dark' | 'gruvbox' | 'synthwave' | 'catppuccin'
     | 'nord-light' | 'monokai-light' | 'solarized-light' | 'gruvbox-light' | 'catppuccin-latte';
 
@@ -18,7 +18,8 @@ const THEMES: { category: string; options: ThemeOption[] }[] = [
     {
         category: 'Classic',
         options: [
-            { name: 'dark', label: 'Dark', icon: <Moon size={16} />, color: '#8b5cf6' },
+            { name: 'auto', label: 'Auto (System)', icon: <Monitor size={16} />, color: '#c9a961' },
+            { name: 'dark', label: 'Dark', icon: <Moon size={16} />, color: '#c9a961' },
             { name: 'light', label: 'Light', icon: <Sun size={16} />, color: '#7c3aed' },
         ]
     },

@@ -1,32 +1,32 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap');
 
 /* ========================================
    THEME SYSTEM - CSS Custom Properties
    ======================================== */
 
 :root {
-  /* Default Dark Theme */
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #12121a;
-  --bg-tertiary: #1a1a25;
-  --bg-card: #15151f;
-  --bg-glass: rgba(20, 20, 30, 0.8);
+  /* Default Dark Theme - Dark Academia */
+  --bg-primary: #1a1816;
+  --bg-secondary: #221f1c;
+  --bg-tertiary: #2d2926;
+  --bg-card: #1e1b18;
+  --bg-glass: rgba(30, 27, 24, 0.9);
 
-  --text-primary: #f5f5f7;
-  --text-secondary: #a1a1aa;
-  --text-muted: #71717a;
+  --text-primary: #f4f1ea;
+  --text-secondary: #c4b9a8;
+  --text-muted: #8a7f70;
 
-  --accent-primary: #8b5cf6;
-  --accent-secondary: #a78bfa;
-  --accent-tertiary: #c4b5fd;
-  --accent-glow: rgba(139, 92, 246, 0.4);
+  --accent-primary: #c9a961;
+  --accent-secondary: #d4b87a;
+  --accent-tertiary: #e8d4a8;
+  --accent-glow: rgba(201, 169, 97, 0.3);
 
-  --success: #10b981;
-  --error: #ef4444;
-  --warning: #f59e0b;
+  --success: #7cb87c;
+  --error: #c75c5c;
+  --warning: #d4a84b;
 
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-glow: rgba(139, 92, 246, 0.3);
+  --border-color: rgba(244, 241, 234, 0.1);
+  --border-glow: rgba(201, 169, 97, 0.25);
 
   /* Accessibility & Flat Design */
   --gradient-primary: var(--accent-primary);
@@ -35,12 +35,13 @@
 
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
 
   /* Shadows - Minimal/None */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.2);
   --shadow-glow: none;
 
   /* Transitions - Faster/Simpler */
