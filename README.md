@@ -48,5 +48,21 @@ Marginalia is a modern, developer-focused Optical Character Recognition (OCR) we
 4.  **Export**: Click the "Share" icon to generate a beautiful image of your snippet.
 5.  **Settings**: Click the "Gear" icon to toggle history or change themes.
 
+## Roadmap
+
+Future improvements and ideas:
+
+- [ ] **Multi-language OCR**: Support for languages beyond English
+- [ ] **Batch Processing**: Extract code from multiple images at once
+- [ ] **Custom Export Themes**: User-defined gradient backgrounds for exports
+- [ ] **Export Formats**: Add SVG and PDF export options
+- [ ] **GitHub Gist Integration**: Save snippets directly to GitHub
+- [ ] **Browser Extension**: Quick capture from any webpage
+- [ ] **Keyboard Shortcuts**: Power-user shortcuts for all actions
+- [ ] **PWA Offline Mode**: Full functionality without internet
+- [ ] **AI Code Cleanup**: Smart correction of OCR errors using AI
+- [ ] **Line Numbers in Export**: Optional line numbers in exported images
+- [ ] **Share Links**: Generate shareable URLs for snippets
+
 ## Browser Support
 Requires a modern browser with WebAssembly support (Chrome, Edge, Firefox, Safari).
