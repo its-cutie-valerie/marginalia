@@ -1,0 +1,21 @@
+
+.skeleton {
+  background: var(--bg-tertiary);
+  background-image: linear-gradient(
+    90deg,
+    var(--bg-tertiary) 0px,
+    var(--bg-secondary) 40px,
+    var(--bg-tertiary) 80px
+  );
+  background-size: 600px;
+  animation: skeleton-shimmer 1.6s infinite linear;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -100px;
+  }
+  40%, 100% {
+    background-position: 240px;
+  }
+}
