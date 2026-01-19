@@ -55,7 +55,6 @@ Future improvements and ideas:
 - [ ] **Multi-language OCR**: Support for languages beyond English
 - [ ] **Batch Processing**: Extract code from multiple images at once
 - [ ] **Custom Export Themes**: User-defined gradient backgrounds for exports
-- [ ] **Export Formats**: Add SVG and PDF export options
 - [ ] **GitHub Gist Integration**: Save snippets directly to GitHub
 - [ ] **Browser Extension**: Quick capture from any webpage
 - [ ] **Keyboard Shortcuts**: Power-user shortcuts for all actions
