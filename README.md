@@ -1,6 +1,8 @@
-# PicCodey
+# Marginalia
 
-PicCodey is a modern, developer-focused Optical Character Recognition (OCR) web application. it transforms screenshots, photos, and clipboard content into editable, runnable code. Built with a "manual-first" philosophy, it gives you precise control over extraction, editing, execution, and exporting.
+*Capture code. Anywhere.*
+
+Marginalia is a modern, developer-focused Optical Character Recognition (OCR) web application. It transforms screenshots, photos, and clipboard content into editable, runnable code. Built with a "manual-first" philosophy, it gives you precise control over extraction, editing, execution, and exporting.
 
 ## Key Features
 
@@ -16,7 +18,7 @@ PicCodey is a modern, developer-focused Optical Character Recognition (OCR) web 
 
 ### Beautiful & Functional
 -   **Smart Export**: Create stunning, Carbon-style images of your code for sharing on social media.
--   **Theme Engine**: Choose from a wide variety of themes (Dracula, Nord, Sunset, etc.) via the Settings menu.
+-   **Theme Engine**: Choose from a wide variety of themes (Dracula, Nord, Catppuccin, etc.) via the Settings menu.
 -   **History Tracking**: Automatically saves your recent extractions for easy retrieval.
 
 ## Technologies

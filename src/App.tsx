@@ -326,9 +326,9 @@ function App() {
     <div className="app">
       <div className="app-container">
         <header className="header">
-          <h1 className="header__title">PicCodey</h1>
+          <h1 className="header__title">Marginalia</h1>
           <p className="header__subtitle">
-            A silly little tool to extract your silly little code from your silly little images with syntax highlighting
+            Capture code. Anywhere.
           </p>
           <div className="header__actions">
             <button
@@ -392,12 +392,12 @@ function App() {
         <footer className="footer">
           <div className="footer__content">
             <p className="footer__text">
-              Made with <span className="footer__heart"><Heart size={iconSize} fill="currentColor" /></span> by{' '}
               <a href="https://github.com/its-cutie-valerie" target="_blank" rel="noopener noreferrer">
-                Valérie
+                Made with <span className="footer__heart"><Heart size={iconSize} fill="currentColor" /></span> by Valérie
               </a>
             </p>
             <div className="footer__buttons">
+              {/* TODO: to do later
               <a
                 href="https://ko-fi.com/valerie"
                 target="_blank"
@@ -407,6 +407,7 @@ function App() {
               >
                 <Coffee size={20} />
               </a>
+              */}
               <a
                 href="https://github.com/its-cutie-valerie"
                 target="_blank"

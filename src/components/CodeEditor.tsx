@@ -209,7 +209,7 @@ export function CodeEditor({
                                 language={language}
                                 value={code}
                                 onChange={(value) => setCode(value || '')}
-                                theme={theme === 'light' ? 'light' : 'vs-dark'}
+                                theme={theme === 'light' || theme.endsWith('-light') ? 'light' : 'vs-dark'}
                                 options={{
                                     fontSize: 14,
                                     fontFamily: "'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace",
